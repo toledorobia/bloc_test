@@ -54,7 +54,11 @@ class MyApp extends StatelessWidget {
             BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is LoggedAuthState) {
-                  context.read<PostsBloc>().add(GetPostsEvent());
+                  final user = context.read<AuthBloc>().state.user;
+
+                  context
+                      .read<PostsBloc>()
+                      .add(GetPostsEvent(userId: user!.id));
                 } else if (state is NotLoggedAuthState) {}
               },
             ),

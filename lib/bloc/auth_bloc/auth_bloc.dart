@@ -23,10 +23,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (apiKey == null || apiKey != user.email) {
           emit(NotLoggedAuthState());
         } else {
-          emit(LoggedAuthState(user));
+          emit(LoggedAuthState(user: user));
         }
       } catch (e) {
-        emit(ErrorAuthState(e.toString()));
+        emit(ErrorAuthState(error: e.toString()));
       }
     });
 
@@ -40,12 +40,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           UserModel user = _createMockUser();
 
           await storageService.write("api_key", user.email);
-          emit(LoggedAuthState(user));
+          emit(LoggedAuthState(user: user));
         } else {
-          emit(const ErrorAuthState("Email or password invalid."));
+          emit(const ErrorAuthState(error: "Email or password invalid."));
         }
       } catch (e) {
-        emit(ErrorAuthState(e.toString()));
+        emit(ErrorAuthState(error: e.toString()));
       }
     });
 
@@ -54,7 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await storageService.delete("api_key");
         emit(NotLoggedAuthState());
       } catch (e) {
-        emit(ErrorAuthState(e.toString()));
+        emit(ErrorAuthState(error: e.toString()));
       }
     });
   }
