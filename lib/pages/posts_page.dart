@@ -41,20 +41,30 @@ class PostsPage extends StatelessWidget {
           }
 
           if (state is LoadedPostsState) {
-            return ListView.separated(
-              itemCount: state.posts.length,
-              itemBuilder: (context, index) {
-                final post = state.posts[index];
+            return RefreshIndicator(
+              onRefresh: () {
+                final user = BlocProvider.of<AuthBloc>(context).state.user;
+                final postsBloc = BlocProvider.of<PostsBloc>(context)
+                  ..add(GetPostsEvent(userId: user!.id));
 
-                return ListTile(
-                  title: Text(post.title),
-                  onTap: () {
-                    context.router.push(PostRoute(id: post.id));
-                  },
-                );
+                return postsBloc.stream
+                    .firstWhere((it) => it is! LoadingPostsState);
               },
-              separatorBuilder: (context, index) => Divider(
-                color: Colors.grey.shade600,
+              child: ListView.separated(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) {
+                  final post = state.posts[index];
+
+                  return ListTile(
+                    title: Text(post.title),
+                    onTap: () {
+                      context.router.push(PostRoute(id: post.id));
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(
+                  color: Colors.grey.shade600,
+                ),
               ),
             );
           }

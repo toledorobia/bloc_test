@@ -14,7 +14,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       emit(LoadingPostsState());
 
       try {
-        // print("Request posts");
+        print("Request posts");
         final posts = await postsRepository.fetchAll();
         emit(LoadedPostsState(posts));
       } catch (e) {
